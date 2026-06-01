@@ -1,0 +1,28 @@
+campaign: Summer 2026 Launch
+
+deliverables:
+  - id: hero-photo
+    type: photo
+    provider: openai
+    count: 4
+    aspect_ratio: "4:5"
+    prompt: >
+      Studio product photo of a runner mid-stride wearing the new lightweight
+      sneaker, dramatic rim lighting on a clean seamless background.
+
+  - id: lifestyle-photo
+    type: photo
+    count: 6
+    aspect_ratio: "1:1"
+    prompt: >
+      Candid lifestyle shot of a diverse group training together at sunrise in
+      an urban plaza — sweat, motion blur, authentic energy.
+
+  - id: launch-teaser
+    type: video
+    provider: google
+    duration_seconds: 8
+    aspect_ratio: "9:16"
+    prompt: >
+      Fast-cut 8-second vertical teaser: close-ups of the sneaker, a runner
+      lacing up, an explosive sprint start, ending on the logo.

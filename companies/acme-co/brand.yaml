@@ -1,0 +1,21 @@
+name: Acme Athletics
+slug: acme-co
+description: Direct-to-consumer performance footwear and apparel.
+brand_voice: Energetic, bold and aspirational — speak to everyday athletes.
+default_aspect_ratio: "4:5"
+
+colors:
+  - "#0B5FFF"
+  - "#FF4D00"
+  - "#0A0A0A"
+
+keywords:
+  - dynamic motion
+  - urban training
+  - high energy
+
+negative_prompts:
+  - low quality
+  - watermark
+  - distorted anatomy
+  - extra limbs

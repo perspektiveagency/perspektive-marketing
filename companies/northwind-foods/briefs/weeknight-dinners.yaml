@@ -1,0 +1,19 @@
+campaign: Weeknight Dinners
+
+deliverables:
+  - id: dish-hero
+    type: photo
+    count: 5
+    aspect_ratio: "1:1"
+    prompt: >
+      Overhead food photo of a colorful organic grain bowl on a rustic wooden
+      table, soft natural daylight, fresh herbs scattered around.
+
+  - id: recipe-reel
+    type: video
+    provider: runway
+    duration_seconds: 6
+    aspect_ratio: "9:16"
+    prompt: >
+      Cozy 6-second vertical cooking reel: hands chopping fresh vegetables,
+      steam rising from a pan, finished dish plated on the counter.

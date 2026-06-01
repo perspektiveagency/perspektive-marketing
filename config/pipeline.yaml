@@ -1,0 +1,9 @@
+# Pipeline-wide defaults. Each brief deliverable may override `provider`.
+
+# Default provider per media type (used when a deliverable doesn't set one).
+providers:
+  photo: openai      # openai (gpt-image-1) | google (imagen)
+  video: google      # google (veo) | runway | openai (sora)
+
+# Outputs are written to companies/<slug>/<output_subdir>/<brief>/<deliverable>/
+output_subdir: outputs

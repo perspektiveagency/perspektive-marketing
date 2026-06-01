@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Secrets / local config
+.env
+.env.*
+!.env.example
+
+# Generated content — keep the folders, ignore the assets
+companies/*/outputs/*
+!companies/*/outputs/.gitkeep
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

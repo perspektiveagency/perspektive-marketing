@@ -1,0 +1,20 @@
+name: Northwind Foods
+slug: northwind-foods
+description: Organic meal-kit delivery service for busy families.
+brand_voice: Warm, wholesome and reassuring — food you can feel good about.
+default_aspect_ratio: "1:1"
+
+colors:
+  - "#2E7D32"
+  - "#F5E9D3"
+  - "#5D4037"
+
+keywords:
+  - fresh organic produce
+  - cozy home kitchen
+  - natural daylight
+
+negative_prompts:
+  - artificial colors
+  - plastic packaging
+  - low quality
