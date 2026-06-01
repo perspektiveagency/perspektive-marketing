@@ -1,8 +1,9 @@
 # Pipeline-wide defaults. Each brief deliverable may override `provider`.
 
 # Default provider per media type (used when a deliverable doesn't set one).
+# Google covers both with a single GOOGLE_API_KEY: Imagen for photos, Veo for video.
 providers:
-  photo: openai      # openai (gpt-image-1) | google (imagen)
+  photo: google      # google (imagen) | openai (gpt-image-1)
   video: google      # google (veo) | runway | openai (sora)
 
 # Outputs are written to companies/<slug>/<output_subdir>/<brief>/<deliverable>/

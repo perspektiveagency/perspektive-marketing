@@ -7,9 +7,16 @@ and GOOGLE_API_KEY (or Vertex AI env vars; see .env.example).
 from __future__ import annotations
 
 import os
+import time
 
 from .base import ContentProvider
+from ..logging import get_logger
 from ..models import GeneratedAsset, GenerationRequest, MediaType
+
+log = get_logger(__name__)
+
+# How long to wait between polls of a Veo long-running operation.
+_VIDEO_POLL_SECONDS = 10
 
 
 class GoogleProvider(ContentProvider):
@@ -59,13 +66,43 @@ class GoogleProvider(ContentProvider):
         return assets
 
     def _generate_video(self, request: GenerationRequest) -> list[GeneratedAsset]:
-        # TODO: Veo is a long-running operation. Sketch:
-        #   op = client.models.generate_videos(model="veo-3.0-generate-001",
-        #                                       prompt=request.prompt, config={...})
-        #   while not op.done: time.sleep(10); op = client.operations.get(op)
-        #   download op.result.generated_videos[*].video bytes into output_dir
-        # See https://ai.google.dev/gemini-api/docs/video for the current surface.
-        raise NotImplementedError(
-            "Veo video generation skeleton — implement the long-running operation "
-            "poll + download here."
+        client = self._client()
+        d = request.deliverable
+        aspect = d.aspect_ratio or request.brand.default_aspect_ratio
+
+        config: dict = {"aspect_ratio": aspect}
+        if d.duration_seconds:
+            config["duration_seconds"] = d.duration_seconds
+
+        # Veo generation is a long-running operation: start it, then poll.
+        operation = client.models.generate_videos(
+            model="veo-3.0-generate-001",
+            prompt=request.prompt,
+            config=config,
         )
+        while not operation.done:
+            log.info("Waiting for Veo video '%s'...", d.id)
+            time.sleep(_VIDEO_POLL_SECONDS)
+            operation = client.operations.get(operation)
+
+        assets: list[GeneratedAsset] = []
+        for i, generated in enumerate(operation.response.generated_videos, start=1):
+            path = request.output_dir / f"{d.id}-{i:02d}.mp4"
+            # Download the file bytes from the API, then save to disk.
+            client.files.download(file=generated.video)
+            generated.video.save(str(path))
+            assets.append(
+                GeneratedAsset(
+                    deliverable_id=d.id,
+                    media_type=MediaType.video,
+                    provider=self.name,
+                    path=path,
+                    prompt=request.prompt,
+                    metadata={
+                        "model": "veo-3.0-generate-001",
+                        "aspect_ratio": aspect,
+                        "duration_seconds": d.duration_seconds,
+                    },
+                )
+            )
+        return assets

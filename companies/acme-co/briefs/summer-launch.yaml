@@ -3,7 +3,6 @@ campaign: Summer 2026 Launch
 deliverables:
   - id: hero-photo
     type: photo
-    provider: openai
     count: 4
     aspect_ratio: "4:5"
     prompt: >
@@ -20,7 +19,6 @@ deliverables:
 
   - id: launch-teaser
     type: video
-    provider: google
     duration_seconds: 8
     aspect_ratio: "9:16"
     prompt: >
