@@ -34,6 +34,7 @@ class Deliverable(BaseModel):
     prompt: str
     provider: str | None = None  # overrides the per-media-type default
     model: str | None = None  # overrides the provider/config default model
+    image: str | None = None  # input image for image-to-video, relative to the company dir
     count: int = 1
     aspect_ratio: str | None = None
     duration_seconds: int | None = None  # video only
@@ -57,6 +58,7 @@ class GenerationRequest(BaseModel):
     prompt: str  # final, brand-enriched prompt
     output_dir: Path
     model: str | None = None  # resolved model name; None => provider default
+    image_path: Path | None = None  # resolved input image for image-to-video
     dry_run: bool = False
 
 

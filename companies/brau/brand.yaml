@@ -1,0 +1,21 @@
+name: Brau
+slug: brau
+description: Premium beauty and spa brand — treatments and spa-like experiences.
+brand_voice: Calm, elegant and indulgent — quiet luxury, understated and warm.
+default_aspect_ratio: "9:16"
+
+colors:
+  - "#E8B8B0"   # blush pink
+  - "#E7DAC6"   # warm beige
+  - "#C99A5B"   # terracotta / tan
+
+keywords:
+  - soft natural daylight
+  - serene spa interior
+  - quiet luxury
+
+negative_prompts:
+  - harsh lighting
+  - clutter
+  - low quality
+  - distorted geometry

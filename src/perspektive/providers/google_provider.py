@@ -80,12 +80,13 @@ class GoogleProvider(ContentProvider):
         if d.duration_seconds:
             config["duration_seconds"] = d.duration_seconds
 
+        # Optional starting frame: turns text-to-video into image-to-video.
+        generate_kwargs: dict = {"model": model, "prompt": request.prompt, "config": config}
+        if request.image_path is not None:
+            generate_kwargs["image"] = self._load_image(request.image_path)
+
         # Veo generation is a long-running operation: start it, then poll.
-        operation = client.models.generate_videos(
-            model=model,
-            prompt=request.prompt,
-            config=config,
-        )
+        operation = client.models.generate_videos(**generate_kwargs)
         while not operation.done:
             log.info("Waiting for Veo video '%s'...", d.id)
             time.sleep(_VIDEO_POLL_SECONDS)
@@ -108,7 +109,20 @@ class GoogleProvider(ContentProvider):
                         "model": model,
                         "aspect_ratio": aspect,
                         "duration_seconds": d.duration_seconds,
+                        "source_image": str(request.image_path) if request.image_path else None,
                     },
                 )
             )
         return assets
+
+    @staticmethod
+    def _load_image(path):
+        from google.genai import types
+
+        if not path.exists():
+            raise RuntimeError(
+                f"Input image not found: {path}. Place the image there or fix the "
+                f"deliverable's `image:` path."
+            )
+        mime = "image/png" if path.suffix.lower() == ".png" else "image/jpeg"
+        return types.Image(image_bytes=path.read_bytes(), mime_type=mime)

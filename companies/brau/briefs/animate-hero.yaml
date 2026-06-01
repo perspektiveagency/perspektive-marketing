@@ -1,0 +1,17 @@
+campaign: Brand Story
+
+deliverables:
+  # Image-to-video: animates companies/brau/assets/hero.jpg with subtle motion.
+  - id: hero-animation
+    type: video
+    image: assets/hero.jpg
+    duration_seconds: 5
+    aspect_ratio: "9:16"
+    prompt: >
+      Animate this spa interior photograph with subtle, premium ambient motion.
+      A very slow, smooth cinematic push-in toward the blush-pink lounge chair.
+      Soft daylight drifts gently across the scene; a faint, slow flicker from
+      the candle on the tan side table; barely-there dust motes floating in the
+      light. Keep everything calm, elegant and almost still — the image should
+      feel quietly alive without anything moving abruptly. Preserve the original
+      colors, composition and the "brau." branding exactly.
