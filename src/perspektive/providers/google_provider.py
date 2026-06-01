@@ -9,9 +9,9 @@ from __future__ import annotations
 import os
 import time
 
-from .base import ContentProvider
 from ..logging import get_logger
 from ..models import GeneratedAsset, GenerationRequest, MediaType
+from .base import ContentProvider
 
 log = get_logger(__name__)
 
@@ -21,6 +21,8 @@ _VIDEO_POLL_SECONDS = 10
 # Provider defaults, used when neither the deliverable nor pipeline.yaml sets a model.
 _DEFAULT_PHOTO_MODEL = "imagen-4.0-generate-001"
 _DEFAULT_VIDEO_MODEL = "veo-3.0-generate-001"
+# Used for photos that supply a reference image (image-to-image / editing).
+_DEFAULT_EDIT_MODEL = "gemini-2.5-flash-image"
 
 
 class GoogleProvider(ContentProvider):
@@ -45,6 +47,13 @@ class GoogleProvider(ContentProvider):
         return self._generate_video(request)
 
     def _generate_photo(self, request: GenerationRequest) -> list[GeneratedAsset]:
+        # A reference image means image-to-image / editing — keep the real
+        # product and compose a new scene around it.
+        if request.image_path is not None:
+            return self._edit_photo(request)
+        return self._generate_photo_text(request)
+
+    def _generate_photo_text(self, request: GenerationRequest) -> list[GeneratedAsset]:
         client = self._client()
         d = request.deliverable
         aspect = d.aspect_ratio or request.brand.default_aspect_ratio
@@ -69,6 +78,61 @@ class GoogleProvider(ContentProvider):
                 )
             )
         return assets
+
+    def _edit_photo(self, request: GenerationRequest) -> list[GeneratedAsset]:
+        """Reference-image generation: feed the input image + prompt to the
+        Gemini image model and keep the real product in a new scene."""
+        client = self._client()
+        d = request.deliverable
+        model = request.model or _DEFAULT_EDIT_MODEL
+        image_part = self._image_part(request.image_path)
+
+        assets: list[GeneratedAsset] = []
+        for i in range(1, d.count + 1):
+            response = client.models.generate_content(
+                model=model,
+                contents=[request.prompt, image_part],
+            )
+            path = request.output_dir / f"{d.id}-{i:02d}.png"
+            image_bytes = self._first_image_bytes(response)
+            if image_bytes is None:
+                raise RuntimeError(
+                    f"Model '{model}' returned no image for deliverable '{d.id}'."
+                )
+            path.write_bytes(image_bytes)
+            assets.append(
+                GeneratedAsset(
+                    deliverable_id=d.id,
+                    media_type=MediaType.photo,
+                    provider=self.name,
+                    path=path,
+                    prompt=request.prompt,
+                    metadata={"model": model, "source_image": str(request.image_path)},
+                )
+            )
+        return assets
+
+    @staticmethod
+    def _image_part(path):
+        from google.genai import types
+
+        if not path.exists():
+            raise RuntimeError(
+                f"Input image not found: {path}. Place the image there or fix the "
+                f"deliverable's `image:` path."
+            )
+        mime = "image/png" if path.suffix.lower() == ".png" else "image/jpeg"
+        return types.Part.from_bytes(data=path.read_bytes(), mime_type=mime)
+
+    @staticmethod
+    def _first_image_bytes(response):
+        """Pull the first inline image out of a Gemini generate_content response."""
+        for candidate in getattr(response, "candidates", None) or []:
+            for part in getattr(candidate.content, "parts", None) or []:
+                inline = getattr(part, "inline_data", None)
+                if inline is not None and getattr(inline, "data", None):
+                    return inline.data
+        return None
 
     def _generate_video(self, request: GenerationRequest) -> list[GeneratedAsset]:
         client = self._client()

@@ -1,0 +1,21 @@
+name: water.
+slug: water
+description: Minimalist lifestyle brand — canvas totes and everyday essentials.
+brand_voice: Clean, modern and understated — confident minimalism, lowercase.
+default_aspect_ratio: "4:5"
+
+colors:
+  - "#000000"   # black
+  - "#FFFFFF"   # white
+  - "#C9B79C"   # desert sand / natural
+
+keywords:
+  - natural outdoor light
+  - earthy desert tones
+  - candid lifestyle
+
+negative_prompts:
+  - distorted logo
+  - extra straps
+  - low quality
+  - warped text

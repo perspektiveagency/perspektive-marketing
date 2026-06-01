@@ -9,8 +9,8 @@ from __future__ import annotations
 import base64
 import os
 
-from .base import ContentProvider
 from ..models import GeneratedAsset, GenerationRequest, MediaType
+from .base import ContentProvider
 
 _DEFAULT_PHOTO_MODEL = "gpt-image-1"
 
