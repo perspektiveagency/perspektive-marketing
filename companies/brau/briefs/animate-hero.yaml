@@ -5,6 +5,7 @@ deliverables:
   - id: hero-animation
     type: video
     image: assets/hero.jpg
+    model: veo-3.1-fast-generate-001   # Fast = ~$0.15/sec (confirm id in pipeline.yaml)
     duration_seconds: 5
     aspect_ratio: "9:16"
     prompt: >
