@@ -12,6 +12,8 @@ import os
 from .base import ContentProvider
 from ..models import GeneratedAsset, GenerationRequest, MediaType
 
+_DEFAULT_PHOTO_MODEL = "gpt-image-1"
+
 _ASPECT_TO_SIZE = {
     "1:1": "1024x1024",
     "16:9": "1536x1024",
@@ -45,8 +47,9 @@ class OpenAIProvider(ContentProvider):
         client = self._client()
         d = request.deliverable
         aspect = d.aspect_ratio or request.brand.default_aspect_ratio
+        model = request.model or _DEFAULT_PHOTO_MODEL
         result = client.images.generate(
-            model="gpt-image-1",
+            model=model,
             prompt=request.prompt,
             size=_ASPECT_TO_SIZE.get(aspect, "1024x1024"),
             n=d.count,
@@ -62,7 +65,7 @@ class OpenAIProvider(ContentProvider):
                     provider=self.name,
                     path=path,
                     prompt=request.prompt,
-                    metadata={"model": "gpt-image-1", "aspect_ratio": aspect},
+                    metadata={"model": model, "aspect_ratio": aspect},
                 )
             )
         return assets

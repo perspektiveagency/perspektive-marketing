@@ -1,8 +1,8 @@
 import yaml
 
-from perspektive.config import PipelineConfig
+from perspektive.config import ModelDefaults, PipelineConfig
 from perspektive.models import Brand, Deliverable, MediaType
-from perspektive.pipeline import build_prompt, run_brief
+from perspektive.pipeline import build_prompt, resolve_model, run_brief
 
 
 def _seed_company(tmp_path):
@@ -45,6 +45,18 @@ def test_run_brief_dry_run_writes_assets(tmp_path):
 
     # manifest written per deliverable
     assert (tmp_path / "acme" / "outputs" / "launch" / "hero" / "manifest.json").exists()
+
+
+def test_resolve_model_prefers_deliverable_then_config():
+    config = PipelineConfig(models=ModelDefaults(video="veo-3.1-fast-generate-001"))
+    from_config = Deliverable(id="a", type=MediaType.video, prompt="x")
+    assert resolve_model(from_config, config) == "veo-3.1-fast-generate-001"
+
+    override = Deliverable(id="b", type=MediaType.video, prompt="x", model="veo-3.0-generate-001")
+    assert resolve_model(override, config) == "veo-3.0-generate-001"
+
+    # No config default and no override -> None (provider picks its own default).
+    assert resolve_model(Deliverable(id="c", type=MediaType.photo, prompt="x"), config) is None
 
 
 def test_run_brief_filter_by_deliverable(tmp_path):

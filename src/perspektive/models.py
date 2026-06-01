@@ -33,6 +33,7 @@ class Deliverable(BaseModel):
     type: MediaType
     prompt: str
     provider: str | None = None  # overrides the per-media-type default
+    model: str | None = None  # overrides the provider/config default model
     count: int = 1
     aspect_ratio: str | None = None
     duration_seconds: int | None = None  # video only
@@ -55,6 +56,7 @@ class GenerationRequest(BaseModel):
     brand: Brand
     prompt: str  # final, brand-enriched prompt
     output_dir: Path
+    model: str | None = None  # resolved model name; None => provider default
     dry_run: bool = False
 
 

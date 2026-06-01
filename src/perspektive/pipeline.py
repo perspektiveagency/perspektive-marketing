@@ -31,6 +31,14 @@ def resolve_provider_name(deliverable: Deliverable, config: PipelineConfig) -> s
     return getattr(config.providers, deliverable.type.value)
 
 
+def resolve_model(deliverable: Deliverable, config: PipelineConfig) -> str | None:
+    """Per-deliverable model override, else the config default, else None
+    (let the provider pick its own default)."""
+    if deliverable.model:
+        return deliverable.model
+    return getattr(config.models, deliverable.type.value)
+
+
 def run_deliverable(
     brand: Brand,
     brief: Brief,
@@ -56,6 +64,7 @@ def run_deliverable(
         brand=brand,
         prompt=build_prompt(brand, deliverable),
         output_dir=output_dir,
+        model=resolve_model(deliverable, config),
         dry_run=dry_run,
     )
     log.info(

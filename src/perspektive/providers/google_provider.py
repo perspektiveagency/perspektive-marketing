@@ -18,6 +18,10 @@ log = get_logger(__name__)
 # How long to wait between polls of a Veo long-running operation.
 _VIDEO_POLL_SECONDS = 10
 
+# Provider defaults, used when neither the deliverable nor pipeline.yaml sets a model.
+_DEFAULT_PHOTO_MODEL = "imagen-4.0-generate-001"
+_DEFAULT_VIDEO_MODEL = "veo-3.0-generate-001"
+
 
 class GoogleProvider(ContentProvider):
     name = "google"
@@ -44,8 +48,9 @@ class GoogleProvider(ContentProvider):
         client = self._client()
         d = request.deliverable
         aspect = d.aspect_ratio or request.brand.default_aspect_ratio
+        model = request.model or _DEFAULT_PHOTO_MODEL
         result = client.models.generate_images(
-            model="imagen-4.0-generate-001",
+            model=model,
             prompt=request.prompt,
             config={"number_of_images": d.count, "aspect_ratio": aspect},
         )
@@ -60,7 +65,7 @@ class GoogleProvider(ContentProvider):
                     provider=self.name,
                     path=path,
                     prompt=request.prompt,
-                    metadata={"model": "imagen-4.0-generate-001", "aspect_ratio": aspect},
+                    metadata={"model": model, "aspect_ratio": aspect},
                 )
             )
         return assets
@@ -69,6 +74,7 @@ class GoogleProvider(ContentProvider):
         client = self._client()
         d = request.deliverable
         aspect = d.aspect_ratio or request.brand.default_aspect_ratio
+        model = request.model or _DEFAULT_VIDEO_MODEL
 
         config: dict = {"aspect_ratio": aspect}
         if d.duration_seconds:
@@ -76,7 +82,7 @@ class GoogleProvider(ContentProvider):
 
         # Veo generation is a long-running operation: start it, then poll.
         operation = client.models.generate_videos(
-            model="veo-3.0-generate-001",
+            model=model,
             prompt=request.prompt,
             config=config,
         )
@@ -99,7 +105,7 @@ class GoogleProvider(ContentProvider):
                     path=path,
                     prompt=request.prompt,
                     metadata={
-                        "model": "veo-3.0-generate-001",
+                        "model": model,
                         "aspect_ratio": aspect,
                         "duration_seconds": d.duration_seconds,
                     },
