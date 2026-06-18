@@ -1,0 +1,24 @@
+campaign: Brand Story
+
+# Imagen generates fresh, on-brand still photos in the style of the hero shot.
+# Note: these are newly generated images (text-to-image), not edits of the
+# uploaded photo. Tweak the prompts to taste.
+deliverables:
+  - id: chair-variations
+    type: photo
+    count: 4
+    aspect_ratio: "9:16"
+    prompt: >
+      Editorial spa interior photograph: a plush blush-pink velvet lounge chair
+      beside a curved tan side table holding a single lit candle, on a soft
+      terracotta-flecked terrazzo floor against a warm beige wall. Soft natural
+      daylight, calm and minimal, quiet-luxury aesthetic, shot on medium format.
+
+  - id: detail-shots
+    type: photo
+    count: 3
+    aspect_ratio: "1:1"
+    prompt: >
+      Close-up product-style detail of spa elements — folded soft towels, a lit
+      candle, a ceramic cup on a tan surface — warm beige and blush palette,
+      soft daylight, shallow depth of field, serene and minimal.

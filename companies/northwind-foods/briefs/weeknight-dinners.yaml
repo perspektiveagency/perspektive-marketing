@@ -11,7 +11,6 @@ deliverables:
 
   - id: recipe-reel
     type: video
-    provider: runway
     duration_seconds: 6
     aspect_ratio: "9:16"
     prompt: >

@@ -6,8 +6,8 @@ pipeline can be exercised end-to-end without keys or network.
 
 from __future__ import annotations
 
-from .base import ContentProvider
 from ..models import GeneratedAsset, GenerationRequest, MediaType
+from .base import ContentProvider
 
 
 class StubProvider(ContentProvider):

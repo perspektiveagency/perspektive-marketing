@@ -1,0 +1,19 @@
+campaign: Lifestyle
+
+# Reference-image generation: keeps the real "water." tote from
+# assets/bag.jpg and composes a new scene around it. Because a reference
+# image is set on a photo deliverable, the Google provider uses its image
+# model (gemini-2.5-flash-image) instead of plain text-to-image.
+deliverables:
+  - id: held-by-person
+    type: photo
+    image: assets/bag.jpg
+    count: 3
+    aspect_ratio: "4:5"
+    prompt: >
+      A natural, candid lifestyle photograph of a person holding this exact
+      black canvas tote bag by its straps, walking on a sunlit gravel path in
+      an earthy desert landscape. Warm late-afternoon light, casual neutral
+      outfit, editorial fashion style, shallow depth of field. Keep the bag's
+      shape, fabric and the white lowercase "water." logo exactly as in the
+      reference image — do not alter or warp the logo or text.

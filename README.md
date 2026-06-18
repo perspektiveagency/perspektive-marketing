@@ -62,15 +62,15 @@ companies/<your-slug>/
 
 | name     | photo            | video            | env var              |
 |----------|------------------|------------------|----------------------|
+| `google` | Imagen ✅        | Veo ✅           | `GOOGLE_API_KEY`     |
 | `openai` | gpt-image-1 ✅   | Sora (TODO)      | `OPENAI_API_KEY`     |
-| `google` | Imagen ✅        | Veo (TODO)       | `GOOGLE_API_KEY`     |
 | `runway` | —                | Gen-3/4 (TODO)   | `RUNWAYML_API_SECRET`|
 | `stub`   | placeholder      | placeholder      | none (used by `--dry-run`) |
 
-Photo generation is wired up for OpenAI and Google. Video adapters and the
-Sora photo-to-video path are left as clearly-marked skeletons (`NotImplementedError`
-with guidance) — fill them in against the current SDK once you pick your
-primary video tool. See `docs/ARCHITECTURE.md` to add or extend a provider.
+**`google` is the default for both photos and video** — a single `GOOGLE_API_KEY`
+covers everything. The OpenAI video (Sora) and Runway adapters are left as
+clearly-marked skeletons (`NotImplementedError` with guidance); fill them in if
+you want a different video backend. See `docs/ARCHITECTURE.md` to extend a provider.
 
 > Model names (e.g. `gpt-image-1`, `imagen-4.0-generate-001`) are set in the
 > provider modules — bump them as the APIs evolve.

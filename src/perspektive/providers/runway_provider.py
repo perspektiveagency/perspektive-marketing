@@ -11,8 +11,8 @@ from __future__ import annotations
 
 import os
 
-from .base import ContentProvider
 from ..models import GeneratedAsset, GenerationRequest, MediaType
+from .base import ContentProvider
 
 
 class RunwayProvider(ContentProvider):

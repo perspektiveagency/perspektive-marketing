@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-from .config import PipelineConfig, load_brand, load_brief
+from pathlib import Path
+
+from .config import PipelineConfig, company_dir, load_brand, load_brief
 from .logging import get_logger
 from .models import Brand, Brief, Deliverable, GeneratedAsset, GenerationRequest
 from .providers.registry import get_provider
@@ -31,6 +33,24 @@ def resolve_provider_name(deliverable: Deliverable, config: PipelineConfig) -> s
     return getattr(config.providers, deliverable.type.value)
 
 
+def resolve_model(deliverable: Deliverable, config: PipelineConfig) -> str | None:
+    """Per-deliverable model override, else the config default, else None
+    (let the provider pick its own default)."""
+    if deliverable.model:
+        return deliverable.model
+    return getattr(config.models, deliverable.type.value)
+
+
+def resolve_image_path(
+    deliverable: Deliverable, brand: Brand, config: PipelineConfig
+) -> Path | None:
+    """Resolve a deliverable's input image (for image-to-video) relative to the
+    company directory. Returns None when no image is set."""
+    if not deliverable.image:
+        return None
+    return company_dir(brand.slug, config) / deliverable.image
+
+
 def run_deliverable(
     brand: Brand,
     brief: Brief,
@@ -56,6 +76,8 @@ def run_deliverable(
         brand=brand,
         prompt=build_prompt(brand, deliverable),
         output_dir=output_dir,
+        model=resolve_model(deliverable, config),
+        image_path=resolve_image_path(deliverable, brand, config),
         dry_run=dry_run,
     )
     log.info(

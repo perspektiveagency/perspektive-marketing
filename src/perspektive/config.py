@@ -22,10 +22,18 @@ class ProviderDefaults(BaseModel):
     video: str = "stub"
 
 
+class ModelDefaults(BaseModel):
+    """Optional default model per media type. None => the provider's own default."""
+
+    photo: str | None = None
+    video: str | None = None
+
+
 class PipelineConfig(BaseModel):
     companies_dir: Path = DEFAULT_COMPANIES_DIR
     output_subdir: str = "outputs"
     providers: ProviderDefaults = Field(default_factory=ProviderDefaults)
+    models: ModelDefaults = Field(default_factory=ModelDefaults)
 
 
 def load_pipeline_config(path: Path | None = None) -> PipelineConfig:

@@ -1,9 +1,21 @@
 # Pipeline-wide defaults. Each brief deliverable may override `provider`.
 
 # Default provider per media type (used when a deliverable doesn't set one).
+# Google covers both with a single GOOGLE_API_KEY: Imagen for photos, Veo for video.
 providers:
-  photo: openai      # openai (gpt-image-1) | google (imagen)
+  photo: google      # google (imagen) | openai (gpt-image-1)
   video: google      # google (veo) | runway | openai (sora)
+
+# Default model per media type. Leave blank to use the provider's own default.
+# A deliverable can override these with its own `model:` field.
+# Video cost is per second of output — pick the model to control spend:
+#   veo-3.0-generate-001        ~$0.40/sec  (standard, with audio)  [default]
+#   veo-3.1-fast-generate-001   ~$0.15/sec  (fast, with audio)
+#   veo-3.1-lite-generate-001   ~$0.03/sec  (720p, no audio)
+# Confirm exact model ids + prices at https://ai.google.dev/gemini-api/docs/pricing
+models:
+  photo:            # e.g. imagen-4.0-generate-001
+  video:            # e.g. veo-3.1-fast-generate-001  (cheaper than the default)
 
 # Outputs are written to companies/<slug>/<output_subdir>/<brief>/<deliverable>/
 output_subdir: outputs
